@@ -15,6 +15,7 @@ def main(stdscr):
     curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
 
     center_y = round(curses.COLS / 2)
     center_x = round(curses.LINES / 2)
@@ -24,6 +25,7 @@ def main(stdscr):
                       curses.color_pair(1))
 
     while True:
+
 
         #  get key input
         try:
@@ -39,8 +41,6 @@ def main(stdscr):
             curses.endwin()
             exit()
 
-        print(f"[{datetime.datetime.now()}] We reached the end !")
-
         #  cleaning old text and displaying new one
         stdscr.clear()
         if in_menu:
@@ -52,6 +52,9 @@ def main(stdscr):
         else:
             pass
             # todo : game here
+
+        # displaying the where source code is
+        stdscr.addstr(0, 0, "Source code available on https://github.com/LeBeaufort/ssh-game", curses.color_pair(4))
 
         # refreshing stuff
         stdscr.refresh()
