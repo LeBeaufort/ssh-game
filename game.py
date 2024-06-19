@@ -8,7 +8,7 @@ from curses.textpad import rectangle
 def main(stdscr):
     in_menu = True
 
-    GAME_SIZE_X = 28
+    GAME_SIZE_X = 58
     GAME_SIZE_Y = 25
 
     stdscr.nodelay(True)  # make stdscr.getkey() non-blocking
@@ -29,7 +29,7 @@ def main(stdscr):
                       curses.color_pair(1))
 
     #  so we are sure to do not display anything outside an area
-    game_window = curses.newwin(GAME_SIZE_Y, GAME_SIZE_Y, 3, 3)
+    game_window = curses.newwin(GAME_SIZE_Y, GAME_SIZE_X, 3, 3)
 
     while True:
 
@@ -56,16 +56,17 @@ def main(stdscr):
             stdscr.addstr(20, 39, exitmsg, curses.color_pair(3))
         else:
             try:
-                rectangle(game_window, 1, 1, 4, 4)
+                rectangle(game_window, 0, 0, GAME_SIZE_Y-1, GAME_SIZE_X-1)
             except:
-                pass  # ignoring the error :
-                # https://stackoverflow.com/questions/52804155/extending-curses-rectangle-box-to-edge-of-terminal-in-python
+                pass
+            # https://stackoverflow.com/questions/52804155/extending-curses-rectangle-box-to-edge-of-terminal-in-python
 
         # displaying the where source code is
         stdscr.addstr(0, 0, "Source code available on https://github.com/LeBeaufort/ssh-game", curses.color_pair(4))
 
         # refreshing stuff
         stdscr.refresh()
+        game_window.refresh()  # we need it
         stdscr.getch()
         sleep(0.1)
 
