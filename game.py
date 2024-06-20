@@ -5,6 +5,9 @@ from time import sleep
 from curses.textpad import rectangle
 
 
+snake = []
+
+
 def main(stdscr):
     in_menu = True
 
@@ -20,9 +23,6 @@ def main(stdscr):
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
     curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-
-    center_y = round(curses.COLS / 2)
-    center_x = round(curses.LINES / 2)
 
     if curses.COLS < 200 or curses.LINES < 61:
         stdscr.addstr(0, 0, 'Your terminal seems too little to play this game, you should get a bigger one !',
@@ -51,9 +51,9 @@ def main(stdscr):
         stdscr.clear()
         if in_menu:
             # display the intro
-            stdscr.addstr(1, center_y - 39, intro, curses.color_pair(2))
-            stdscr.addstr(10, 39, play, curses.color_pair(3))
-            stdscr.addstr(20, 39, exitmsg, curses.color_pair(3))
+            stdscr.addstr(1, 0, intro, curses.color_pair(2))
+            stdscr.addstr(10, 0, play, curses.color_pair(3))
+            stdscr.addstr(20, 0, exitmsg, curses.color_pair(3))
         else:
             try:
                 rectangle(game_window, 0, 0, GAME_SIZE_Y-1, GAME_SIZE_X-1)
