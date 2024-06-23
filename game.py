@@ -1,18 +1,37 @@
 import curses
 from bigtext import *
-import datetime
 from time import sleep
 from curses.textpad import rectangle
 
+snake = [(9, 3), (9, 4), (9, 5)]
+direction = 0  # 0 --> UP ; 1 --> LEFT ; 2 --> DOWN ; 3 --> RIGHT
 
-snake = []
+
+def update_direction(new_key):
+    global direction
+    if new_key == "UP" and direction != 2:
+        direction = 0
+    elif new_key == "LEFT" and direction != 3:
+        direction = 1
+    elif new_key == "DOWN" and direction != 0:
+        direction = 2
+    elif new_key == "RIGHT" and direction != 1:
+        direction = 3
+
+
+def display_snake(window):
+    global snake
+    for x, y in snake:
+        for a in range(4):
+            for b in range(4):
+                window.addstr(y * 4 + a, x * 4 + b, "#", curses.color_pair(5))
 
 
 def main(stdscr):
     in_menu = True
 
-    GAME_SIZE_X = 58
-    GAME_SIZE_Y = 25
+    GAME_SIZE_X = 68
+    GAME_SIZE_Y = 28
 
     stdscr.nodelay(True)  # make stdscr.getkey() non-blocking
     curses.noecho()
@@ -23,13 +42,14 @@ def main(stdscr):
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
     curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+    curses.init_pair(5, curses.COLOR_GREEN, curses.COLOR_GREEN)
 
     if curses.COLS < 200 or curses.LINES < 61:
         stdscr.addstr(0, 0, 'Your terminal seems too little to play this game, you should get a bigger one !',
                       curses.color_pair(1))
 
     #  so we are sure to do not display anything outside an area
-    game_window = curses.newwin(GAME_SIZE_Y, GAME_SIZE_X, 3, 3)
+    game_window = curses.newwin(GAME_SIZE_Y, GAME_SIZE_X, 2, 3)
 
     while True:
 
@@ -42,13 +62,22 @@ def main(stdscr):
         # do something with it
         if key == " ":
             in_menu = False
-            # stuff to run the game
         elif key == '\x1b':  # if the user press escape, we leave the game
             curses.endwin()
             exit()
+        # stuff to update the direction of the snake
+        elif key == curses.KEY_UP:
+            update_direction("UP")
+        elif key == curses.KEY_DOWN:
+            update_direction("DOWN")
+        elif key == curses.KEY_LEFT:
+            update_direction("LEFT")
+        elif key == curses.KEY_RIGHT:
+            update_direction("RIGHT")
 
         #  cleaning old text and displaying new one
         stdscr.clear()
+
         if in_menu:
             # display the intro
             stdscr.addstr(1, 0, intro, curses.color_pair(2))
@@ -56,7 +85,9 @@ def main(stdscr):
             stdscr.addstr(20, 0, exitmsg, curses.color_pair(3))
         else:
             try:
-                rectangle(game_window, 0, 0, GAME_SIZE_Y-1, GAME_SIZE_X-1)
+                game_window.clear()
+                display_snake(game_window)
+                rectangle(game_window, 0, 0, GAME_SIZE_Y - 1, GAME_SIZE_X - 1)
             except:
                 pass
             # https://stackoverflow.com/questions/52804155/extending-curses-rectangle-box-to-edge-of-terminal-in-python
