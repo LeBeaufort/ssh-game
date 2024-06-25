@@ -13,8 +13,11 @@ class Game:
 
         self.GAME_SIZE_X = 68
         self.GAME_SIZE_Y = 28
+        self.SNAKE_UPDATE_FREQUENCY = 3
 
         self.w = None
+        self.snake_update_counter = 0
+        self.display_gameover = False
 
     def update_direction(self, new_key):
         print(f"Direction is {self.direction}")
@@ -71,7 +74,6 @@ class Game:
         self.w = game_window
 
         while True:
-
             #  get key input
             try:
                 key = stdscr.getkey()
@@ -80,8 +82,13 @@ class Game:
 
             # do something with it
             if key == " ":
-                self.in_menu = False
-                self.snake = self.default_snake.copy()
+                if self.in_menu:
+                    self.snake = self.default_snake.copy()
+                    self.in_menu = False
+                elif self.display_gameover:
+                    self.in_menu = True
+                    self.display_gameover = False
+
             elif key == '\x1b':  # if the user press escape, we leave the game
                 curses.endwin()
                 exit()
@@ -105,16 +112,20 @@ class Game:
                 stdscr.addstr(10, 0, play, curses.color_pair(3))
                 stdscr.addstr(20, 0, exitmsg, curses.color_pair(3))
             else:
-                self.update_snake()
+                if self.snake_update_counter != self.SNAKE_UPDATE_FREQUENCY:
+                    self.snake_update_counter += 1
+                else:
+                    self.snake_update_counter = 0
+                    self.update_snake()
                 game_window.clear()
-                print(self.snake[0])
                 if (self.snake[0][0] > self.GAME_SIZE_X / 4 or
                         self.snake[0][1] > self.GAME_SIZE_Y / 4 or
                         self.snake[0][0] < 0 or
                         self.snake[0][1] < 0):
 
                     game_window.addstr(int(self.GAME_SIZE_Y / 2 - 5), 5, gameover, curses.color_pair(1))
-                    self.in_menu = True
+                    game_window.addstr(int(self.GAME_SIZE_Y / 2 + 2), 4, "hit space to continue", curses.color_pair(1))
+                    self.display_gameover = True
                 else:
                     self.display_snake()
 
@@ -131,7 +142,7 @@ class Game:
             stdscr.refresh()
             game_window.refresh()  # we need it
             stdscr.getch()
-            sleep(0.3)
+            sleep(0.1)
 
 
 if __name__ == "__main__":
