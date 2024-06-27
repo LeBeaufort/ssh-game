@@ -8,7 +8,7 @@ class Game:
     def __init__(self):
         self.default_snake = [(9, 3), (9, 4), (9, 5)]
         self.snake = None
-        self.direction = 0
+        self.direction = 0  # 0 --> UP ; 1 --> LEFT ; 2 --> DOWN ; 3 --> RIGHT
         self.in_menu = True
 
         self.GAME_SIZE_X = 68
@@ -43,11 +43,11 @@ class Game:
         if self.direction == 0:
             heady -= 1
         elif self.direction == 1:
-            headx += 1
+            headx -= 1
         elif self.direction == 2:
             heady += 1
         else:
-            headx -= 1
+            headx += 1
 
         self.snake.insert(0, (headx, heady))
         self.snake.pop(len(self.snake) - 1)
@@ -77,6 +77,7 @@ class Game:
             #  get key input
             try:
                 key = stdscr.getkey()
+                print(f"Key is {key}, type is {type(key)}")
             except:
                 key = None
 
@@ -93,14 +94,13 @@ class Game:
                 curses.endwin()
                 exit()
             # stuff to update the direction of the snake
-            elif key == curses.KEY_UP:
-                print("HELLOOOOOOOOO")
+            elif key == "KEY_UP":
                 self.update_direction("UP")
-            elif key == curses.KEY_DOWN:
+            elif key == "KEY_DOWN":
                 self.update_direction("DOWN")
-            elif key == curses.KEY_LEFT:
+            elif key == "KEY_LEFT":
                 self.update_direction("LEFT")
-            elif key == curses.KEY_RIGHT:
+            elif key == "KEY_RIGHT":
                 self.update_direction("RIGHT")
 
             #  cleaning old text and displaying new one
