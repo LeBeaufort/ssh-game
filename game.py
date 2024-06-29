@@ -18,6 +18,7 @@ class Game:
         self.w = None
         self.snake_update_counter = 0
         self.display_gameover = False
+        self.score = 0
 
     def update_direction(self, new_key):
         print(f"Direction is {self.direction}")
@@ -87,6 +88,7 @@ class Game:
                     #  reseting to default
                     self.snake = self.default_snake.copy()
                     self.direction = 0
+                    self.score = 0
                     self.in_menu = False
                 elif self.display_gameover:
                     self.in_menu = True
@@ -120,6 +122,7 @@ class Game:
                     self.snake_update_counter = 0
                     self.update_snake()
                 game_window.clear()
+                stdscr.addstr(2, 72, f"Score : {self.score}", curses.color_pair(3))
                 if (self.snake[0][0] >= self.GAME_SIZE_X / 4 or
                         self.snake[0][1] >= self.GAME_SIZE_Y / 4 or
                         self.snake[0][0] < 0 or
