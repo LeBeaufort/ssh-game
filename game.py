@@ -84,7 +84,9 @@ class Game:
             # do something with it
             if key == " ":
                 if self.in_menu:
+                    #  reseting to default
                     self.snake = self.default_snake.copy()
+                    self.direction = 0
                     self.in_menu = False
                 elif self.display_gameover:
                     self.in_menu = True
@@ -118,8 +120,8 @@ class Game:
                     self.snake_update_counter = 0
                     self.update_snake()
                 game_window.clear()
-                if (self.snake[0][0] > self.GAME_SIZE_X / 4 or
-                        self.snake[0][1] > self.GAME_SIZE_Y / 4 or
+                if (self.snake[0][0] >= self.GAME_SIZE_X / 4 or
+                        self.snake[0][1] >= self.GAME_SIZE_Y / 4 or
                         self.snake[0][0] < 0 or
                         self.snake[0][1] < 0):
 
