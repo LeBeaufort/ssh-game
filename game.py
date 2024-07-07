@@ -11,6 +11,8 @@ class Game:
         self.direction = 0  # 0 --> UP ; 1 --> LEFT ; 2 --> DOWN ; 3 --> RIGHT
         self.in_menu = True
 
+        self.SQUARE_SIZE_X = 5
+        self.SQUARE_SIZE_Y = 3
         self.GAME_SIZE_X = 70  # it will be  14 columns (5 * 14 = 70)
         self.GAME_SIZE_Y = 27  # it will be 9 rows (3 * 9 = 27)
         self.SNAKE_UPDATE_FREQUENCY = 3
@@ -21,7 +23,6 @@ class Game:
         self.score = 0
 
     def update_direction(self, new_key):
-        print(f"Direction is {self.direction}")
         if new_key == "UP" and self.direction != 2:
             self.direction = 0
         elif new_key == "LEFT" and self.direction != 3:
@@ -30,13 +31,12 @@ class Game:
             self.direction = 2
         elif new_key == "RIGHT" and self.direction != 1:
             self.direction = 3
-        print(f"Now it is [{self.direction}")
 
     def display_snake(self):
         for x, y in self.snake:
-            for a in range(3):
-                for b in range(5):
-                    self.w.addstr(y * 3 + a, x * 5 + b, "#", curses.color_pair(5))
+            for a in range(self.SQUARE_SIZE_Y):
+                for b in range(self.SQUARE_SIZE_X):
+                    self.w.addstr(y * self.SQUARE_SIZE_Y + a, x * self.SQUARE_SIZE_X + b, "#", curses.color_pair(5))
 
     def update_snake(self):
         headx = self.snake[0][0]
@@ -52,6 +52,12 @@ class Game:
 
         self.snake.insert(0, (headx, heady))
         self.snake.pop(len(self.snake) - 1)
+
+    def is_dead(self):
+        return (self.snake[0][0] >= self.GAME_SIZE_X / self.SQUARE_SIZE_X or
+                        self.snake[0][1] >= self.GAME_SIZE_Y / self.SQUARE_SIZE_Y or
+                        self.snake[0][0] < 0 or
+                        self.snake[0][1] < 0)
 
     def main(self, stdscr):
         stdscr.nodelay(True)  # make stdscr.getkey() non-blocking
@@ -116,29 +122,31 @@ class Game:
                 stdscr.addstr(10, 0, play, curses.color_pair(3))
                 stdscr.addstr(20, 0, exitmsg, curses.color_pair(3))
             else:
+
+                # should we update the snake now ?
                 if self.snake_update_counter != self.SNAKE_UPDATE_FREQUENCY:
                     self.snake_update_counter += 1
                 else:
                     self.snake_update_counter = 0
                     self.update_snake()
+
                 game_window.clear()
                 stdscr.addstr(2, self.GAME_SIZE_X + 4, f"Score : {self.score}", curses.color_pair(3))
-                if (self.snake[0][0] >= self.GAME_SIZE_X / 5 or
-                        self.snake[0][1] >= self.GAME_SIZE_Y / 3 or
-                        self.snake[0][0] < 0 or
-                        self.snake[0][1] < 0):
 
+                # check if the snake is alive. If yes displaying, else display game over
+                if self.is_dead():
                     game_window.addstr(int(self.GAME_SIZE_Y / 2 - 5), 5, gameover, curses.color_pair(1))
                     game_window.addstr(int(self.GAME_SIZE_Y / 2 + 2), 4, "hit space to continue", curses.color_pair(1))
                     self.display_gameover = True
                 else:
                     self.display_snake()
 
+                # displaying the rectangle, inside a try/except because :
+                # https://stackoverflow.com/questions/52804155/extending-curses-rectangle-box-to-edge-of-terminal-in-python
                 try:
                     rectangle(game_window, 0, 0, self.GAME_SIZE_Y - 1, self.GAME_SIZE_X - 1)
                 except:
                     pass
-                # https://stackoverflow.com/questions/52804155/extending-curses-rectangle-box-to-edge-of-terminal-in-python
 
             # displaying the where source code is
             stdscr.addstr(0, 0, "Source code available on https://github.com/LeBeaufort/ssh-game", curses.color_pair(4))
