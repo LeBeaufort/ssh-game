@@ -11,8 +11,8 @@ class Game:
         self.direction = 0  # 0 --> UP ; 1 --> LEFT ; 2 --> DOWN ; 3 --> RIGHT
         self.in_menu = True
 
-        self.GAME_SIZE_X = 68
-        self.GAME_SIZE_Y = 28
+        self.GAME_SIZE_X = 70  # it will be  14 columns (5 * 14 = 70)
+        self.GAME_SIZE_Y = 27  # it will be 9 rows (3 * 9 = 27)
         self.SNAKE_UPDATE_FREQUENCY = 3
 
         self.w = None
@@ -34,9 +34,9 @@ class Game:
 
     def display_snake(self):
         for x, y in self.snake:
-            for a in range(4):
-                for b in range(4):
-                    self.w.addstr(y * 4 + a, x * 4 + b, "#", curses.color_pair(5))
+            for a in range(3):
+                for b in range(5):
+                    self.w.addstr(y * 3 + a, x * 5 + b, "#", curses.color_pair(5))
 
     def update_snake(self):
         headx = self.snake[0][0]
@@ -122,9 +122,9 @@ class Game:
                     self.snake_update_counter = 0
                     self.update_snake()
                 game_window.clear()
-                stdscr.addstr(2, 72, f"Score : {self.score}", curses.color_pair(3))
-                if (self.snake[0][0] >= self.GAME_SIZE_X / 4 or
-                        self.snake[0][1] >= self.GAME_SIZE_Y / 4 or
+                stdscr.addstr(2, self.GAME_SIZE_X + 4, f"Score : {self.score}", curses.color_pair(3))
+                if (self.snake[0][0] >= self.GAME_SIZE_X / 5 or
+                        self.snake[0][1] >= self.GAME_SIZE_Y / 3 or
                         self.snake[0][0] < 0 or
                         self.snake[0][1] < 0):
 
