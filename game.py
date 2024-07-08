@@ -2,6 +2,7 @@ import curses
 from bigtext import *
 from time import sleep
 from curses.textpad import rectangle
+from random import randint
 
 
 class Game:
@@ -10,12 +11,14 @@ class Game:
         self.snake = None
         self.direction = 0  # 0 --> UP ; 1 --> LEFT ; 2 --> DOWN ; 3 --> RIGHT
         self.in_menu = True
+        self.apples = []
 
         self.SQUARE_SIZE_X = 5
         self.SQUARE_SIZE_Y = 3
         self.GAME_SIZE_X = 70  # it will be  14 columns (5 * 14 = 70)
         self.GAME_SIZE_Y = 27  # it will be 9 rows (3 * 9 = 27)
         self.SNAKE_UPDATE_FREQUENCY = 3
+        self.APPLE_SPAWNING_PROBAPILITY = 10
 
         self.w = None
         self.snake_update_counter = 0
@@ -32,11 +35,18 @@ class Game:
         elif new_key == "RIGHT" and self.direction != 1:
             self.direction = 3
 
-    def display_snake(self):
+    def display_game(self):
+        # first snake
         for x, y in self.snake:
             for a in range(self.SQUARE_SIZE_Y):
                 for b in range(self.SQUARE_SIZE_X):
                     self.w.addstr(y * self.SQUARE_SIZE_Y + a, x * self.SQUARE_SIZE_X + b, "#", curses.color_pair(5))
+
+        #  then apples
+        for x, y in self.apples:
+            for a in range(self.SQUARE_SIZE_Y):
+                for b in range(self.SQUARE_SIZE_X):
+                    self.w.addstr(y * self.SQUARE_SIZE_Y + a, x * self.SQUARE_SIZE_X + b, "#", curses.color_pair(1))
 
     def update_snake(self):
         headx = self.snake[0][0]
@@ -55,9 +65,18 @@ class Game:
 
     def is_dead(self):
         return (self.snake[0][0] >= self.GAME_SIZE_X / self.SQUARE_SIZE_X or
-                        self.snake[0][1] >= self.GAME_SIZE_Y / self.SQUARE_SIZE_Y or
-                        self.snake[0][0] < 0 or
-                        self.snake[0][1] < 0)
+                self.snake[0][1] >= self.GAME_SIZE_Y / self.SQUARE_SIZE_Y or
+                self.snake[0][0] < 0 or
+                self.snake[0][1] < 0)
+
+    def spawn_apple(self):
+        new = self.snake[0]  # we initialise to this position, so we are sure to place go at least one time in the loop
+        # and do not get the same (0,0) each time
+        while new in self.apples or new in self.snake:  # preventing to spawn on an apple or on the snake
+            new = (
+                randint(0, int(self.GAME_SIZE_X / self.SQUARE_SIZE_X)),
+                randint(0, int(self.GAME_SIZE_Y / self.SQUARE_SIZE_Y)))
+        self.apples.append(new)
 
     def main(self, stdscr):
         stdscr.nodelay(True)  # make stdscr.getkey() non-blocking
@@ -70,6 +89,7 @@ class Game:
         curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
         curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
         curses.init_pair(5, curses.COLOR_GREEN, curses.COLOR_GREEN)
+        curses.init_pair(6, curses.COLOR_RED, curses.COLOR_RED)
 
         if curses.COLS < 200 or curses.LINES < 61:
             stdscr.addstr(0, 0, 'Your terminal seems too little to play this game, you should get a bigger one !',
@@ -96,6 +116,7 @@ class Game:
                     self.direction = 0
                     self.score = 0
                     self.in_menu = False
+                    self.apples = []
                 elif self.display_gameover:
                     self.in_menu = True
                     self.display_gameover = False
@@ -126,6 +147,9 @@ class Game:
                 # should we update the snake now ?
                 if self.snake_update_counter != self.SNAKE_UPDATE_FREQUENCY:
                     self.snake_update_counter += 1
+                    if randint(0, self.APPLE_SPAWNING_PROBAPILITY) == 0:
+                        self.spawn_apple()
+                        print('Spawning apple')
                 else:
                     self.snake_update_counter = 0
                     self.update_snake()
@@ -139,7 +163,7 @@ class Game:
                     game_window.addstr(int(self.GAME_SIZE_Y / 2 + 2), 4, "hit space to continue", curses.color_pair(1))
                     self.display_gameover = True
                 else:
-                    self.display_snake()
+                    self.display_game()
 
                 # displaying the rectangle, inside a try/except because :
                 # https://stackoverflow.com/questions/52804155/extending-curses-rectangle-box-to-edge-of-terminal-in-python
