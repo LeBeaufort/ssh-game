@@ -18,7 +18,8 @@ class Game:
         self.GAME_SIZE_X = 70  # it will be  14 columns (5 * 14 = 70)
         self.GAME_SIZE_Y = 27  # it will be 9 rows (3 * 9 = 27)
         self.SNAKE_UPDATE_FREQUENCY = 3
-        self.APPLE_SPAWNING_PROBAPILITY = 10
+        self.APPLE_SPAWNING_PROBAPILITY = 30
+        self.MAX_APPLE = 6
 
         self.w = None
         self.snake_update_counter = 0
@@ -46,7 +47,7 @@ class Game:
         for x, y in self.apples:
             for a in range(self.SQUARE_SIZE_Y):
                 for b in range(self.SQUARE_SIZE_X):
-                    self.w.addstr(y * self.SQUARE_SIZE_Y + a, x * self.SQUARE_SIZE_X + b, "#", curses.color_pair(1))
+                    self.w.addstr(y * self.SQUARE_SIZE_Y + a, x * self.SQUARE_SIZE_X + b, "#", curses.color_pair(6))
 
     def update_snake(self):
         headx = self.snake[0][0]
@@ -74,8 +75,8 @@ class Game:
         # and do not get the same (0,0) each time
         while new in self.apples or new in self.snake:  # preventing to spawn on an apple or on the snake
             new = (
-                randint(0, int(self.GAME_SIZE_X / self.SQUARE_SIZE_X)),
-                randint(0, int(self.GAME_SIZE_Y / self.SQUARE_SIZE_Y)))
+                randint(0, int(self.GAME_SIZE_X / self.SQUARE_SIZE_X) - 1),
+                randint(0, int(self.GAME_SIZE_Y / self.SQUARE_SIZE_Y) - 1))
         self.apples.append(new)
 
     def main(self, stdscr):
@@ -147,7 +148,8 @@ class Game:
                 # should we update the snake now ?
                 if self.snake_update_counter != self.SNAKE_UPDATE_FREQUENCY:
                     self.snake_update_counter += 1
-                    if randint(0, self.APPLE_SPAWNING_PROBAPILITY) == 0:
+                    #  check if we should spawn the apple
+                    if len(self.apples) < self.MAX_APPLE and randint(0, self.APPLE_SPAWNING_PROBAPILITY) == 0:
                         self.spawn_apple()
                         print('Spawning apple')
                 else:
