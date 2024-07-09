@@ -163,8 +163,8 @@ class Game:
 
                 # check if the snake is alive. If yes displaying, else display game over
                 if self.is_dead():
-                    game_window.addstr(int(self.GAME_SIZE_Y / 2 - 5), 5, gameover, curses.color_pair(1))
-                    game_window.addstr(int(self.GAME_SIZE_Y / 2 + 2), 4, "hit space to continue", curses.color_pair(1))
+                    display_gameover(game_window, int(self.GAME_SIZE_Y / 2 - 5), 10, color_pair_number=1)
+                    game_window.addstr(int(self.GAME_SIZE_Y / 2 + 2), 22, "hit space to continue", curses.color_pair(1))
                     self.display_gameover = True
                 else:
                     self.display_game()

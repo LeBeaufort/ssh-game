@@ -1,6 +1,5 @@
 from curses import color_pair
 
-
 exitmsg = r"""
 ______                                                     _          _                      
 | ___ \                                                   | |        | |                     
@@ -31,12 +30,17 @@ ______                                               _                _
                              |_|                               |_|            |___/ 
 """
 
-gameover = r"""                                         
- _____                  _____ 
-|   __|___ _____ ___   |     |_ _ ___ ___ 
-|  |  | .'|     | -_|  |  |  | | | -_|  _|
-|_____|__,|_|_|_|___|  |_____|\_/|___|_|  
-"""
+
+def display_gameover(screen, y, x, color_pair_number):
+    #  these function is helpful because curses cant display multiline text at once
+    gameover = [r"     _____                  _____ ",
+                r"    |   __|___ _____ ___   |     |_ _ ___ ___ ",
+                r"    |  |  | .'|     | -_|  |  |  | | | -_|  _|",
+                r"    |_____|__,|_|_|_|___|  |_____|\_/|___|_|  ",
+                ]
+    for ay, line in enumerate(gameover):
+        screen.addstr(y + ay, x, line, color_pair(color_pair_number))
+
 
 space_to_continue = r"""                                                                                      
                                                _                      _   _             
@@ -49,18 +53,17 @@ space_to_continue = r"""
 
 def display_controls(screen, y, x, color_pair_number):
     controls = [
-                r"                      _             _     ",
-                r"                     | |           | |    ",
-                r"       ___ ___  _ __ | |_ _ __ ___ | |___ ",
-                r"      / __/ _ \| '_ \| __| '__/ _ \| / __|",
-                r"     | (_| (_) | | | | |_| | | (_) | \__ \ ",
-                r"      \___\___/|_| |_|\__|_|  \___/|_|___/",
-                " ",
-                r"    movement : arrows key",
-                r"    quit : escape ",
-                r"    return to menu : ",
-                r"    "]
+        r"                      _             _     ",
+        r"                     | |           | |    ",
+        r"       ___ ___  _ __ | |_ _ __ ___ | |___ ",
+        r"      / __/ _ \| '_ \| __| '__/ _ \| / __|",
+        r"     | (_| (_) | | | | |_| | | (_) | \__ \ ",
+        r"      \___\___/|_| |_|\__|_|  \___/|_|___/",
+        " ",
+        r"    movement : arrows key",
+        r"    quit : escape ",
+        r"    return to menu : ",
+        r"    "]
 
     for ay, line in enumerate(controls):
-        screen.addstr(y+ay, x, line, color_pair(color_pair_number))
-
+        screen.addstr(y + ay, x, line, color_pair(color_pair_number))
