@@ -1,3 +1,6 @@
+from curses import color_pair
+
+
 exitmsg = r"""
 ______                                                     _          _                      
 | ___ \                                                   | |        | |                     
@@ -42,3 +45,22 @@ space_to_continue = r"""
 |  _|_| |___|___|___|  |___|  _|__,|___|___|  |_| |___|  |___|___|_|_|_| |_|_|_|___|___|
 |_|                        |_|                                                          
 """
+
+
+def display_controls(screen, y, x, color_pair_number):
+    controls = [
+                r"                      _             _     ",
+                r"                     | |           | |    ",
+                r"       ___ ___  _ __ | |_ _ __ ___ | |___ ",
+                r"      / __/ _ \| '_ \| __| '__/ _ \| / __|",
+                r"     | (_| (_) | | | | |_| | | (_) | \__ \ ",
+                r"      \___\___/|_| |_|\__|_|  \___/|_|___/",
+                " ",
+                r"    movement : arrows key",
+                r"    quit : escape ",
+                r"    return to menu : ",
+                r"    "]
+
+    for ay, line in enumerate(controls):
+        screen.addstr(y+ay, x, line, color_pair(color_pair_number))
+

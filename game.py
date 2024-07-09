@@ -158,6 +158,8 @@ class Game:
 
                 game_window.clear()
                 stdscr.addstr(2, self.GAME_SIZE_X + 4, f"Score : {self.score}", curses.color_pair(3))
+                #  stdscr.addstr(4, self.GAME_SIZE_X + 4, controls, curses.color_pair(2))
+                display_controls(stdscr, 4, self.GAME_SIZE_X, 2)
 
                 # check if the snake is alive. If yes displaying, else display game over
                 if self.is_dead():
