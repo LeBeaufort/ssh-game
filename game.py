@@ -62,7 +62,14 @@ class Game:
             headx += 1
 
         self.snake.insert(0, (headx, heady))
-        self.snake.pop(len(self.snake) - 1)
+
+        if (headx, heady) in self.apples:
+            # if there is an apple at these coordinates, we remove it and increment the score
+            self.apples.pop(self.apples.index((headx, heady)))
+            self.score += 1
+        else:
+            # if there is not, we remove the last square of the snake, so it isn't getting bigger
+            self.snake.pop(len(self.snake) - 1)
 
     def is_dead(self):
         return (self.snake[0][0] >= self.GAME_SIZE_X / self.SQUARE_SIZE_X or
