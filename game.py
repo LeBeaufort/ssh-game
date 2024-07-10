@@ -142,10 +142,11 @@ class Game:
                 self.update_direction("LEFT")
             elif key == "KEY_RIGHT":
                 self.update_direction("RIGHT")
+            elif key == "d":
+                self.in_menu = True
 
             #  cleaning old text and displaying new one
             stdscr.clear()
-            print("We are entering in the conditions sections")
             if self.in_menu:
                 # display the intro
                 stdscr.addstr(1, 0, intro, curses.color_pair(2))
@@ -166,7 +167,6 @@ class Game:
                     #  check if we should spawn the apple
                     if len(self.apples) < self.MAX_APPLE and randint(0, self.APPLE_SPAWNING_PROBAPILITY) == 0:
                         self.spawn_apple()
-                        print('Spawning apple')
                 else:
                     self.snake_update_counter = 0
                     self.update_snake()
@@ -179,7 +179,6 @@ class Game:
 
                 # check if the snake is alive. If yes displaying, else display game over
                 if self.is_dead():
-                    print("We are dead !")
                     self.display_gameover = True
                 else:
                     self.display_game()
@@ -201,7 +200,6 @@ class Game:
             game_window.refresh()  # we need it
             stdscr.getch()
             sleep(0.1)
-            print(f'End of loop : gameover is {self.display_gameover}')
 
 
 if __name__ == "__main__":

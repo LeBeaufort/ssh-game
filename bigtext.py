@@ -62,7 +62,7 @@ def display_controls(screen, y, x, color_pair_number):
         " ",
         r"    movement : arrows key",
         r"    quit : escape ",
-        r"    return to menu : ",
+        r"    return to menu : d",
         r"    "]
 
     for ay, line in enumerate(controls):
