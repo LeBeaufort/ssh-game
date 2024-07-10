@@ -75,7 +75,8 @@ class Game:
         return (self.snake[0][0] >= self.GAME_SIZE_X / self.SQUARE_SIZE_X or
                 self.snake[0][1] >= self.GAME_SIZE_Y / self.SQUARE_SIZE_Y or
                 self.snake[0][0] < 0 or
-                self.snake[0][1] < 0)
+                self.snake[0][1] < 0 or
+                self.snake[0] in self.snake[1:])  # check if the snake hit himself
 
     def spawn_apple(self):
         new = self.snake[0]  # we initialise to this position, so we are sure to place go at least one time in the loop
@@ -144,12 +145,19 @@ class Game:
 
             #  cleaning old text and displaying new one
             stdscr.clear()
-
+            print("We are entering in the conditions sections")
             if self.in_menu:
                 # display the intro
                 stdscr.addstr(1, 0, intro, curses.color_pair(2))
                 stdscr.addstr(10, 0, play, curses.color_pair(3))
                 stdscr.addstr(20, 0, exitmsg, curses.color_pair(3))
+
+            elif self.display_gameover:
+                game_window.clear()
+                display_gameover(game_window, int(self.GAME_SIZE_Y / 2 - 5), 10, color_pair_number=1)
+                game_window.addstr(int(self.GAME_SIZE_Y / 2 + 2), 22, "hit space to continue", curses.color_pair(1))
+                game_window.refresh()
+
             else:
 
                 # should we update the snake now ?
@@ -164,18 +172,20 @@ class Game:
                     self.update_snake()
 
                 game_window.clear()
+
                 stdscr.addstr(2, self.GAME_SIZE_X + 4, f"Score : {self.score}", curses.color_pair(3))
                 #  stdscr.addstr(4, self.GAME_SIZE_X + 4, controls, curses.color_pair(2))
                 display_controls(stdscr, 4, self.GAME_SIZE_X, 2)
 
                 # check if the snake is alive. If yes displaying, else display game over
                 if self.is_dead():
-                    display_gameover(game_window, int(self.GAME_SIZE_Y / 2 - 5), 10, color_pair_number=1)
-                    game_window.addstr(int(self.GAME_SIZE_Y / 2 + 2), 22, "hit space to continue", curses.color_pair(1))
+                    print("We are dead !")
                     self.display_gameover = True
                 else:
                     self.display_game()
 
+            # drawing the rectangle if we are not in the menu (game over)
+            if not self.in_menu:
                 # displaying the rectangle, inside a try/except because :
                 # https://stackoverflow.com/questions/52804155/extending-curses-rectangle-box-to-edge-of-terminal-in-python
                 try:
@@ -191,6 +201,7 @@ class Game:
             game_window.refresh()  # we need it
             stdscr.getch()
             sleep(0.1)
+            print(f'End of loop : gameover is {self.display_gameover}')
 
 
 if __name__ == "__main__":
