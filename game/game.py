@@ -20,6 +20,7 @@ class Game:
         self.SNAKE_UPDATE_FREQUENCY = 3
         self.APPLE_SPAWNING_PROBAPILITY = 30
         self.MAX_APPLE = 6
+        self.DELAY_BETWEEN_FRAMES = 0.1
 
         self.w = None
         self.snake_update_counter = 0
@@ -198,8 +199,7 @@ class Game:
             # refreshing stuff
             stdscr.refresh()
             game_window.refresh()  # we need it
-            stdscr.getch()
-            sleep(0.1)
+            sleep(self.DELAY_BETWEEN_FRAMES)
 
 
 if __name__ == "__main__":
