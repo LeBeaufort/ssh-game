@@ -26,6 +26,7 @@ class Game:
         self.snake_update_counter = 0
         self.display_gameover = False
         self.score = 0
+        self.has_display_statics = False
 
     def update_direction(self, new_key):
         if new_key == "UP" and self.direction != 2:
@@ -88,6 +89,17 @@ class Game:
                 randint(0, int(self.GAME_SIZE_Y / self.SQUARE_SIZE_Y) - 1))
         self.apples.append(new)
 
+    def game_window_drawing(self):
+        """this draw the rectangle and refresh the window"""
+        # displaying the rectangle, inside a try/except because :
+        # https://stackoverflow.com/questions/52804155/extending-curses-rectangle-box-to-edge-of-terminal-in-python
+        try:
+            rectangle(self.w, 0, 0, self.GAME_SIZE_Y - 1, self.GAME_SIZE_X - 1)
+        except:
+            pass
+
+        self.w.refresh()
+
     def main(self, stdscr):
         stdscr.nodelay(True)  # make stdscr.getkey() non-blocking
         curses.noecho()
@@ -127,9 +139,13 @@ class Game:
                     self.score = 0
                     self.in_menu = False
                     self.apples = []
+                    self.has_display_statics = False
+                    #  cleaning old text to be able to diplay the game
+                    stdscr.clear()
                 elif self.display_gameover:
                     self.in_menu = True
                     self.display_gameover = False
+                    self.has_display_statics = False
 
             elif key == '\x1b':  # if the user press escape, we leave the game
                 curses.endwin()
@@ -146,31 +162,33 @@ class Game:
             elif key == "d":
                 self.in_menu = True
 
-            #  cleaning old text and displaying new one
-            stdscr.clear()
             if self.in_menu:
-                # display the intro
-                stdscr.addstr(1, 0, intro, curses.color_pair(2))
-                stdscr.addstr(10, 0, play, curses.color_pair(3))
-                stdscr.addstr(20, 0, exitmsg, curses.color_pair(3))
+                if not self.has_display_statics:
+                    stdscr.clear()  # cleaning old text
+                    # display the intro
+                    stdscr.addstr(1, 0, intro, curses.color_pair(2))
+                    stdscr.addstr(10, 0, play, curses.color_pair(3))
+                    stdscr.addstr(20, 0, exitmsg, curses.color_pair(3))
+                    self.has_display_statics = True
 
             elif self.display_gameover:
-                game_window.clear()
-                display_gameover(game_window, int(self.GAME_SIZE_Y / 2 - 5), 10, color_pair_number=1)
-                game_window.addstr(int(self.GAME_SIZE_Y / 2 + 2), 22, "hit space to continue", curses.color_pair(1))
-                game_window.refresh()
+                if not self.has_display_statics:
+                    game_window.clear()
+                    display_gameover(game_window, int(self.GAME_SIZE_Y / 2 - 5), 10, color_pair_number=1)
+                    game_window.addstr(int(self.GAME_SIZE_Y / 2 + 2), 22, "hit space to continue", curses.color_pair(1))
+                    self.game_window_drawing()
+                    self.has_display_statics = True
 
             else:
-
                 # should we update the snake now ?
                 if self.snake_update_counter != self.SNAKE_UPDATE_FREQUENCY:
                     self.snake_update_counter += 1
-                    #  check if we should spawn the apple
-                    if len(self.apples) < self.MAX_APPLE and randint(0, self.APPLE_SPAWNING_PROBAPILITY) == 0:
-                        self.spawn_apple()
                 else:
                     self.snake_update_counter = 0
                     self.update_snake()
+                    #  check if we should spawn the apple
+                    if len(self.apples) < self.MAX_APPLE and randint(0, self.APPLE_SPAWNING_PROBAPILITY) == 0:
+                        self.spawn_apple()
 
                 game_window.clear()
 
@@ -184,21 +202,12 @@ class Game:
                 else:
                     self.display_game()
 
-            # drawing the rectangle if we are not in the menu (game over)
-            if not self.in_menu:
-                # displaying the rectangle, inside a try/except because :
-                # https://stackoverflow.com/questions/52804155/extending-curses-rectangle-box-to-edge-of-terminal-in-python
-                try:
-                    rectangle(game_window, 0, 0, self.GAME_SIZE_Y - 1, self.GAME_SIZE_X - 1)
-                except:
-                    pass
+                self.game_window_drawing()
 
             # displaying the where source code is
             stdscr.addstr(0, 0, "Source code available on https://github.com/LeBeaufort/ssh-game", curses.color_pair(4))
-
             # refreshing stuff
             stdscr.refresh()
-            game_window.refresh()  # we need it
             sleep(self.DELAY_BETWEEN_FRAMES)
 
 
