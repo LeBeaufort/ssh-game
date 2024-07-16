@@ -126,7 +126,6 @@ class Game:
             #  get key input
             try:
                 key = stdscr.getkey()
-                print(f"Key is {key}, type is {type(key)}")
             except:
                 key = None
 
