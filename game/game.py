@@ -189,27 +189,28 @@ class Game:
                     if len(self.apples) < self.MAX_APPLE and randint(0, self.APPLE_SPAWNING_PROBAPILITY) == 0:
                         self.spawn_apple()
 
-                game_window.clear()
+                    game_window.clear()
 
-                stdscr.addstr(2, self.GAME_SIZE_X + 4, f"Score : {self.score}", curses.color_pair(3))
-                #  stdscr.addstr(4, self.GAME_SIZE_X + 4, controls, curses.color_pair(2))
-                display_controls(stdscr, 4, self.GAME_SIZE_X, 2)
+                    stdscr.addstr(2, self.GAME_SIZE_X + 4, f"Score : {self.score}", curses.color_pair(3))
+                    #  stdscr.addstr(4, self.GAME_SIZE_X + 4, controls, curses.color_pair(2))
+                    display_controls(stdscr, 4, self.GAME_SIZE_X, 2)
 
-                # check if the snake is alive. If yes displaying, else display game over
-                if self.is_dead():
-                    self.display_gameover = True
-                else:
-                    self.display_game()
+                    # check if the snake is alive. If yes displaying, else display game over
+                    if self.is_dead():
+                        self.display_gameover = True
+                    else:
+                        self.display_game()
 
-                self.game_window_drawing()
+                    self.game_window_drawing()
 
             # displaying the where source code is
             stdscr.addstr(0, 0, "Source code available on https://github.com/LeBeaufort/ssh-game", curses.color_pair(4))
-            # refreshing stuff
-            stdscr.refresh()
             sleep(self.DELAY_BETWEEN_FRAMES)
 
 
 if __name__ == "__main__":
     g = Game()
-    curses.wrapper(g.main)
+    try:
+        curses.wrapper(g.main)
+    except KeyboardInterrupt:
+        exit()

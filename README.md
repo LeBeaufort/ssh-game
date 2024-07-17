@@ -12,8 +12,6 @@ If you want to update :
 docker compose down # shutdown container
 git pull  # update locals files
 docker compose up -d --build # rebuild docker image and deploy
-
-
 ```
 
 ## TODO list:
