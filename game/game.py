@@ -21,6 +21,8 @@ class Game:
         self.APPLE_SPAWNING_PROBAPILITY = 30
         self.MAX_APPLE = 6
         self.DELAY_BETWEEN_FRAMES = 0.1
+        self.MIN_COLS = 120
+        self.MIN_LINES = 30
 
         self.w = None
         self.snake_update_counter = 0
@@ -95,10 +97,28 @@ class Game:
         # https://stackoverflow.com/questions/52804155/extending-curses-rectangle-box-to-edge-of-terminal-in-python
         try:
             rectangle(self.w, 0, 0, self.GAME_SIZE_Y - 1, self.GAME_SIZE_X - 1)
-        except:
+        except curses.error:
             pass
 
         self.w.refresh()
+
+    def check_terminal_size(self, stdscr):
+        if curses.COLS < self.MIN_COLS or curses.LINES < self.MIN_LINES:
+            stdscr.addstr(0, 0, 'Your terminal seems too little to play this game, you should get a bigger one !',
+                          curses.color_pair(1))
+            stdscr.addstr(1, 0,
+                          'To let you get a bigger one without having really weird things displayed on your screen,'
+                          'the game will close after you input something',
+                          curses.color_pair(1))
+            stdscr.addstr(3, 0, f'Your terminal size : {curses.COLS}x{curses.LINES}')
+            stdscr.addstr(4, 0, f'Min requirements   : {self.MIN_COLS}x{self.MIN_LINES}')
+            while True:
+                #  get key input
+                try:
+                    stdscr.getkey()
+                    exit()
+                except curses.error:
+                    sleep(self.DELAY_BETWEEN_FRAMES)
 
     def main(self, stdscr):
         stdscr.nodelay(True)  # make stdscr.getkey() non-blocking
@@ -113,9 +133,7 @@ class Game:
         curses.init_pair(5, curses.COLOR_GREEN, curses.COLOR_GREEN)
         curses.init_pair(6, curses.COLOR_RED, curses.COLOR_RED)
 
-        if curses.COLS < 200 or curses.LINES < 61:
-            stdscr.addstr(0, 0, 'Your terminal seems too little to play this game, you should get a bigger one !',
-                          curses.color_pair(1))
+        self.check_terminal_size(stdscr)
 
         #  so we are sure to do not display anything outside an area
         game_window = curses.newwin(self.GAME_SIZE_Y, self.GAME_SIZE_X, 2, 3)
@@ -126,7 +144,7 @@ class Game:
             #  get key input
             try:
                 key = stdscr.getkey()
-            except:
+            except curses.error:
                 key = None
 
             # do something with it
