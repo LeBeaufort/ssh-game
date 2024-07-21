@@ -9,9 +9,12 @@ RUN apt install python3 -y
 # creating new user
 RUN useradd -m game && echo game:game | chpasswd
 
-# adding a banner
+# setting up ssh server
+RUN echo "" > /log.txt
 COPY ./docker/ssh-banner /etc/ssh-banner
-RUN echo "Banner /etc/ssh-banner" >> /etc/ssh/sshd_config
+COPY ./docker/AuthorizedKeyScript.sh /
+COPY ./docker/sshd_config /etc/ssh/sshd_config
+RUN chmod 777 /AuthorizedKeyScript.sh && chmod 777 /log.txt
 
 WORKDIR /home/game/
 COPY ./game/* game/
