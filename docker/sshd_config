@@ -1,5 +1,6 @@
+Banner /etc/ssh-banner
 
-# Example of overriding settings on a per-user basis
+# settings for the ssh connection
 Match User game
     PasswordAuthentication yes
     PermitEmptyPasswords yes

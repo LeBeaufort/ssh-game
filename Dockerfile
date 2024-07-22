@@ -10,11 +10,8 @@ RUN apt install python3 -y
 RUN useradd -m game && passwd -d game
 
 # setting up ssh server
-RUN echo "" > /log.txt
 COPY ./docker/ssh-banner /etc/ssh-banner
-COPY ./docker/AuthorizedKeyScript.sh /
 COPY ./docker/sshd_config /etc/ssh/sshd_config
-RUN chmod 777 /AuthorizedKeyScript.sh && chmod 777 /log.txt
 
 WORKDIR /game/
 COPY ./game/* .
