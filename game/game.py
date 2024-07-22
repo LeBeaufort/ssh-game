@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import curses
 from bigtext import *
 from time import sleep
