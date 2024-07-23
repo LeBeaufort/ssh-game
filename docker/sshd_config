@@ -6,3 +6,4 @@ Match User game
     PermitEmptyPasswords yes
     ForceCommand python3 /game/game.py
     DisableForwarding yes
+    Banner None
