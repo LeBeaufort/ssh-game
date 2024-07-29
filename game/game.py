@@ -22,7 +22,7 @@ class Game:
         self.APPLE_SPAWNING_PROBAPILITY = 30
         self.MAX_APPLE = 6
         self.DELAY_BETWEEN_FRAMES = 0.1
-        self.MIN_COLS = 120
+        self.MIN_COLS = 117
         self.MIN_LINES = 30
 
         self.w = None
@@ -105,19 +105,21 @@ class Game:
 
     def check_terminal_size(self, stdscr):
         if curses.COLS < self.MIN_COLS or curses.LINES < self.MIN_LINES:
-            stdscr.addstr(0, 0, 'Your terminal seems too little to play this game, you should get a bigger one !',
-                          curses.color_pair(1))
-            stdscr.addstr(1, 0,
-                          'To let you get a bigger one without having really weird things displayed on your screen,'
-                          'the game will close after you input something',
-                          curses.color_pair(1))
-            stdscr.addstr(3, 0, f'Your terminal size : {curses.COLS}x{curses.LINES}')
-            stdscr.addstr(4, 0, f'Min requirements   : {self.MIN_COLS}x{self.MIN_LINES}')
+            stdscr.addstr(0, 0, 'YOUR TERMINAL SEEMS TOO LITTLE TO PLAY THIS GAME, YOU SHOULD GET A BIGGER ONE !',
+                          curses.color_pair(4))
+            stdscr.addstr(2, 0,
+                          'THE GAME WILL PROBABLY NOT WORK AS EXPECTED', curses.color_pair(1))
+            stdscr.addstr(4, 0, f'Your terminal size : {curses.COLS}x{curses.LINES}', curses.color_pair(4))
+            stdscr.addstr(5, 0, f'Min requirements   : {self.MIN_COLS}x{self.MIN_LINES}', curses.color_pair(4))
+
+            stdscr.addstr(7, 0, "Press SPACE to play anyway, press any other key to leave", curses.color_pair(1))
             while True:
                 #  get key input
                 try:
-                    stdscr.getkey()
-                    exit()
+                    if stdscr.getkey() == " ":
+                        return
+                    else:
+                        exit()
                 except curses.error:
                     sleep(self.DELAY_BETWEEN_FRAMES)
 
