@@ -4,6 +4,21 @@ from bigtext import *
 from time import sleep
 from curses.textpad import rectangle
 from random import randint
+import os
+from json import loads
+
+# make sure we are running the script in the good directory
+file_place = os.path.dirname(os.path.abspath(__file__))
+os.chdir(file_place)
+
+
+def load_commit_info():
+    try:
+        with open("./commit_info", "r") as f:
+            return loads(f.read())
+    except FileNotFoundError:
+        return {"commit": ".......", "gitdir": None, "message": None, "refs": None, "tree": None, "parent": None,
+                "author": None, "author_date": None}
 
 
 class Game:
@@ -24,6 +39,8 @@ class Game:
         self.DELAY_BETWEEN_FRAMES = 0.1
         self.MIN_COLS = 117
         self.MIN_LINES = 30
+        self.commit_info = load_commit_info()
+        self.VERSION_TEXT = f"{self.commit_info['commit'][0:7]} -- pushed {self.commit_info['author_date']}"
 
         self.w = None
         self.snake_update_counter = 0
@@ -226,6 +243,7 @@ class Game:
 
             # displaying the where source code is
             stdscr.addstr(0, 0, "Source code available on https://github.com/LeBeaufort/ssh-game", curses.color_pair(4))
+            stdscr.addstr(curses.LINES - 1, 0, self.VERSION_TEXT)
             sleep(self.DELAY_BETWEEN_FRAMES)
 
 

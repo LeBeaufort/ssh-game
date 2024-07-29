@@ -1,10 +1,20 @@
-FROM debian:stable-20240701-slim
+FROM python:3.9.19-slim-bullseye
 
 #  Installing ssh server
 RUN apt-get update && apt-get install openssh-server -y
 
-# Installing python
-RUN apt install python3 -y
+RUN mkdir /game/
+
+# Installing libs
+COPY ./docker/requirements.txt /
+RUN pip install -r /requirements.txt
+
+# creating file containing git info
+WORKDIR /temp/
+COPY ./docker/commit_info.py ./
+COPY .git/ ./.git/
+RUN python3 commit_info.py "/game/commit_info"
+
 
 # creating new user
 RUN useradd -m game && passwd -d game
