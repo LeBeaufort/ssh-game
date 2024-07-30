@@ -28,6 +28,7 @@ class Game:
         self.direction = 0  # 0 --> UP ; 1 --> LEFT ; 2 --> DOWN ; 3 --> RIGHT
         self.in_menu = True
         self.apples = []
+        self.paused = False
 
         self.SQUARE_SIZE_X = 5
         self.SQUARE_SIZE_Y = 3
@@ -177,6 +178,7 @@ class Game:
                     self.in_menu = False
                     self.apples = []
                     self.has_display_statics = False
+                    self.paused = False
                     #  cleaning old text to be able to diplay the game
                     stdscr.clear()
                 elif self.display_gameover:
@@ -198,6 +200,10 @@ class Game:
                 self.update_direction("RIGHT")
             elif key == "d":
                 self.in_menu = True
+            elif key == "p":
+                self.paused = not self.paused
+                if not self.paused:
+                    self.has_display_statics = False
 
             if self.in_menu:
                 if not self.has_display_statics:
@@ -218,9 +224,9 @@ class Game:
 
             else:
                 # should we update the snake now ?
-                if self.snake_update_counter != self.SNAKE_UPDATE_FREQUENCY:
+                if not self.paused and self.snake_update_counter != self.SNAKE_UPDATE_FREQUENCY:
                     self.snake_update_counter += 1
-                else:
+                elif self.snake_update_counter == self.SNAKE_UPDATE_FREQUENCY and not self.paused:
                     self.snake_update_counter = 0
                     self.update_snake()
                     #  check if we should spawn the apple
@@ -240,6 +246,12 @@ class Game:
                         self.display_game()
 
                     self.game_window_drawing()
+
+                elif self.paused:
+                    if not self.has_display_statics:
+                        self.has_display_statics = True
+                        display_pause(game_window, 5, 15, 3)
+                        game_window.refresh()
 
             # displaying the where source code is
             stdscr.addstr(0, 0, "Source code available on https://github.com/LeBeaufort/ssh-game", curses.color_pair(4))

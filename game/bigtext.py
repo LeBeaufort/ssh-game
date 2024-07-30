@@ -63,7 +63,19 @@ def display_controls(screen, y, x, color_pair_number):
         r"    movement : arrows key",
         r"    quit : escape ",
         r"    return to menu : d",
+        r"    pause : p"
         r"    "]
 
     for ay, line in enumerate(controls):
+        screen.addstr(y + ay, x, line, color_pair(color_pair_number))
+
+
+def display_pause(screen, y, x, color_pair_number):
+    pause = [
+        r" _____ _____ _____ _____ _____ ____",
+        r"|  _  |  _  |  |  |   __|   __|    \ ",
+        r"|   __|     |  |  |__   |   __|  |  |",
+        r"|__|  |__|__|_____|_____|_____|____/ "
+    ]
+    for ay, line in enumerate(pause):
         screen.addstr(y + ay, x, line, color_pair(color_pair_number))
