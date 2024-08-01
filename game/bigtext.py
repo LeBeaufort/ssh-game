@@ -27,6 +27,13 @@ play = r"""
                              |_|                           |_|       |___|
 """
 
+infos_main_menu = r"""                                                                              
+ _____                    _    ___                                 _     ___     
+|  _  |___ ___ ___ ___   |_|  |  _|___ ___    _____ ___ ___ ___   |_|___|  _|___ 
+|   __|  _| -_|_ -|_ -|  | |  |  _| . |  _|  |     | . |  _| -_|  | |   |  _| . |
+|__|  |_| |___|___|___|  |_|  |_| |___|_|    |_|_|_|___|_| |___|  |_|_|_|_| |___|                                                                          
+"""
+
 
 def display_gameover(screen, y, x, color_pair_number):
     #  these function is helpful because curses cant display multiline text at once
@@ -75,4 +82,15 @@ def display_pause(screen, y, x, color_pair_number):
         r"|__|  |__|__|_____|_____|_____|____/ "
     ]
     for ay, line in enumerate(pause):
+        screen.addstr(y + ay, x, line, color_pair(color_pair_number))
+
+
+def display_info_title(screen, y, x, color_pair_number):
+    infos = [
+        r" _____                  _     ___",
+        r"|   __|___ _____ ___   |_|___|  _|___ ",
+        r"|  |  | .'|     | -_|  | |   |  _| . |",
+        r"|_____|__,|_|_|_|___|  |_|_|_|_| |___|"]
+
+    for ay, line in enumerate(infos):
         screen.addstr(y + ay, x, line, color_pair(color_pair_number))

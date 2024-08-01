@@ -48,6 +48,8 @@ class Game:
         self.display_gameover = False
         self.score = 0
         self.has_display_statics = False
+        self.in_game = False
+        self.in_infos = False
 
     def update_direction(self, new_key):
         if new_key == "UP" and self.direction != 2:
@@ -179,6 +181,7 @@ class Game:
                     self.apples = []
                     self.has_display_statics = False
                     self.paused = False
+                    self.in_game = True
                     #  cleaning old text to be able to diplay the game
                     stdscr.clear()
                 elif self.display_gameover:
@@ -200,18 +203,26 @@ class Game:
                 self.update_direction("RIGHT")
             elif key == "d":
                 self.in_menu = True
+                self.in_game = False
+                self.has_display_statics = False
             elif key == "p":
                 self.paused = not self.paused
                 if not self.paused:
                     self.has_display_statics = False
+            elif key == "i":
+                self.in_infos = True
+                self.in_menu = False
+                self.in_game = False
+                self.has_display_statics = False
 
             if self.in_menu:
                 if not self.has_display_statics:
                     stdscr.clear()  # cleaning old text
                     # display the intro
                     stdscr.addstr(1, 0, intro, curses.color_pair(2))
-                    stdscr.addstr(10, 0, play, curses.color_pair(3))
-                    stdscr.addstr(20, 0, exitmsg, curses.color_pair(3))
+                    stdscr.addstr(9, 0, play, curses.color_pair(3))
+                    stdscr.addstr(15, 0, exitmsg, curses.color_pair(3))
+                    stdscr.addstr(21, 0, infos_main_menu, curses.color_pair(3))
                     self.has_display_statics = True
 
             elif self.display_gameover:
@@ -222,7 +233,7 @@ class Game:
                     self.game_window_drawing()
                     self.has_display_statics = True
 
-            else:
+            elif self.in_game:
                 # should we update the snake now ?
                 if not self.paused and self.snake_update_counter != self.SNAKE_UPDATE_FREQUENCY:
                     self.snake_update_counter += 1
@@ -252,6 +263,22 @@ class Game:
                         self.has_display_statics = True
                         display_pause(game_window, 5, 15, 3)
                         game_window.refresh()
+
+            elif self.in_infos:
+                if not self.has_display_statics:
+                    #  cleaning old text
+                    stdscr.clear()
+                    stdscr.refresh()
+
+                    #  displaying infos
+                    display_info_title(game_window, 5, 15, 4)
+                    game_window.addstr(12, 5, f"Commit id {self.commit_info['commit'][:7]}")
+                    game_window.addstr(14, 5, f"Full commit id {self.commit_info['commit']}")
+                    game_window.addstr(16, 5, f"Pushed on {self.commit_info['author_date']}")
+                    game_window.addstr(18, 5, f"Commit message : \'{self.commit_info['message']}\'")
+
+                    self.game_window_drawing()
+                    self.has_display_statics = True
 
             # displaying the where source code is
             stdscr.addstr(0, 0, "Source code available on https://github.com/LeBeaufort/ssh-game", curses.color_pair(4))
