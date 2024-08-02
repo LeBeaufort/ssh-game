@@ -269,6 +269,7 @@ class Game:
                     #  cleaning old text
                     stdscr.clear()
                     stdscr.refresh()
+                    game_window.clear()
 
                     #  displaying infos
                     display_info_title(game_window, 5, 15, 4)
