@@ -67,13 +67,19 @@ class Game:
         for x, y in self.snake:
             for a in range(self.SQUARE_SIZE_Y):
                 for b in range(self.SQUARE_SIZE_X):
-                    self.w.addstr(y * self.SQUARE_SIZE_Y + a, x * self.SQUARE_SIZE_X + b, "#", curses.color_pair(5))
+                    try:
+                        self.w.addstr(y * self.SQUARE_SIZE_Y + a, x * self.SQUARE_SIZE_X + b, "#", curses.color_pair(5))
+                    except curses.error:
+                        pass
 
         #  then apples
         for x, y in self.apples:
             for a in range(self.SQUARE_SIZE_Y):
                 for b in range(self.SQUARE_SIZE_X):
-                    self.w.addstr(y * self.SQUARE_SIZE_Y + a, x * self.SQUARE_SIZE_X + b, "#", curses.color_pair(6))
+                    try:
+                        self.w.addstr(y * self.SQUARE_SIZE_Y + a, x * self.SQUARE_SIZE_X + b, "#", curses.color_pair(6))
+                    except curses.error:
+                        pass
 
     def update_snake(self):
         headx = self.snake[0][0]
