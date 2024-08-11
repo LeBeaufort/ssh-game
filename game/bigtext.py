@@ -1,6 +1,6 @@
 from curses import color_pair
 
-# text created using http://www.patorjk.com/software/taag/ and using font "rectangle"
+# text created using http://www.patorjk.com/software/taag/ and using font "Rectangles"
 
 
 exitmsg = r"""

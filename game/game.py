@@ -36,7 +36,7 @@ class Game:
         self.GAME_SIZE_X = 70  # it will be  14 columns (5 * 14 = 70)
         self.GAME_SIZE_Y = 27  # it will be 9 rows (3 * 9 = 27)
         self.SNAKE_UPDATE_FREQUENCY = 3
-        self.APPLE_SPAWNING_PROBAPILITY = 30
+        self.APPLE_SPAWNING_PROBABILITY = 30
         self.MAX_APPLE = 6
         self.DELAY_BETWEEN_FRAMES = 0.1
         self.MIN_COLS = 117
@@ -180,7 +180,7 @@ class Game:
             # do something with it
             if key == " ":
                 if self.in_menu:
-                    #  reseting to default
+                    #  resetting to default
                     self.snake = self.default_snake.copy()
                     self.direction = 0
                     self.score = 0
@@ -189,7 +189,7 @@ class Game:
                     self.has_display_statics = False
                     self.paused = False
                     self.in_game = True
-                    #  cleaning old text to be able to diplay the game
+                    #  cleaning old text to be able to display the game
                     stdscr.clear()
                 elif self.display_gameover:
                     self.in_menu = True
@@ -247,13 +247,12 @@ class Game:
                     self.snake_update_counter = 0
                     self.update_snake()
                     #  check if we should spawn the apple
-                    if len(self.apples) < self.MAX_APPLE and randint(0, self.APPLE_SPAWNING_PROBAPILITY) == 0:
+                    if len(self.apples) < self.MAX_APPLE and randint(0, self.APPLE_SPAWNING_PROBABILITY) == 0:
                         self.spawn_apple()
 
                     game_window.clear()
 
                     stdscr.addstr(2, self.GAME_SIZE_X + 4, f"Score : {self.score}", curses.color_pair(3))
-                    #  stdscr.addstr(4, self.GAME_SIZE_X + 4, controls, curses.color_pair(2))
                     display_controls(stdscr, 4, self.GAME_SIZE_X, 2)
 
                     # check if the snake is alive. If yes displaying, else display game over
