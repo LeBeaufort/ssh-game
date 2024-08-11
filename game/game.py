@@ -6,6 +6,7 @@ from curses.textpad import rectangle
 from random import randint
 import os
 from json import loads
+from time import strftime
 
 # make sure we are running the script in the good directory
 file_place = os.path.dirname(os.path.abspath(__file__))
@@ -41,7 +42,7 @@ class Game:
         self.MIN_COLS = 117
         self.MIN_LINES = 30
         self.commit_info = load_commit_info()
-        self.VERSION_TEXT = f"{self.commit_info['commit'][0:7]} -- pushed {self.commit_info['author_date']}"
+        self.VERSION_TEXT = f"{self.commit_info['commit'][0:7]} -- https://github.com/LeBeaufort/ssh-game  ({self.commit_info['author_date']})"
 
         self.w = None
         self.snake_update_counter = 0
@@ -190,7 +191,6 @@ class Game:
                     self.has_display_statics = False
 
             elif key == '\x1b':  # if the user press escape, we leave the game
-                curses.endwin()
                 exit()
             # stuff to update the direction of the snake
             elif key == "KEY_UP":
@@ -282,8 +282,8 @@ class Game:
                     self.has_display_statics = True
 
             # displaying the where source code is
-            stdscr.addstr(0, 0, "Source code available on https://github.com/LeBeaufort/ssh-game", curses.color_pair(4))
-            stdscr.addstr(curses.LINES - 1, 0, self.VERSION_TEXT)
+            stdscr.addstr(0, 0, strftime("It is %H:%M:%S (server time)"), curses.color_pair(4))
+            stdscr.addstr(curses.LINES - 1, 0, self.VERSION_TEXT, curses.color_pair(2))
             sleep(self.DELAY_BETWEEN_FRAMES)
 
 
