@@ -4,6 +4,6 @@ Banner /etc/ssh-banner
 Match User game
     PasswordAuthentication yes
     PermitEmptyPasswords yes
-    ForceCommand python3 /game/game.py
+    ForceCommand python3 /game/game.py $SSH_CONNECTION
     DisableForwarding yes
     Banner None

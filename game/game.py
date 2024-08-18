@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 import curses
-from bigtext import *
-from time import sleep
-from curses.textpad import rectangle
-from random import randint
 import os
+import sys
+from curses.textpad import rectangle
 from json import loads
-from time import strftime
+from random import randint
+from time import sleep
+from requests import get
+
+
+import datetime
+import pytz
+
+from bigtext import *
 
 # make sure we are running the script in the good directory
 file_place = os.path.dirname(os.path.abspath(__file__))
@@ -43,6 +49,17 @@ class Game:
         self.MIN_LINES = 30
         self.commit_info = load_commit_info()
         self.VERSION_TEXT = f"{self.commit_info['commit'][0:7]} -- https://github.com/LeBeaufort/ssh-game  ({self.commit_info['author_date']})"
+        self.TIME_FORMAT = "It is %H:%M:%S"
+
+        try:
+            self.CLIENT = sys.argv[1]
+            self.CLIENT_PORT = sys.argv[2]
+            self.HOST = sys.argv[3]
+            self.HOST_PORT = sys.argv[4]
+        except IndexError: pass
+
+        self.time_zone = None
+        self.is_client_tz = None
 
         self.w = None
         self.snake_update_counter = 0
@@ -51,6 +68,26 @@ class Game:
         self.has_display_statics = False
         self.in_game = False
         self.in_infos = False
+
+    def find_timezone(self):
+        response = get(f"http://ip-api.com/json/{self.CLIENT}?fields=status,timezone")
+        if response.status_code != 200:
+            self.is_client_tz = False
+            self.time_zone = pytz.timezone('utc')
+        else:
+            json_response = response.json()
+            if json_response['status'] != 'success':
+                self.is_client_tz = False
+                self.time_zone = pytz.timezone('utc')
+            else:
+                try:
+                    self.time_zone = pytz.timezone(json_response['timezone'])
+                except pytz.exceptions.UnknownTimeZoneError:
+                    self.is_client_tz = False
+                    self.time_zone = pytz.timezone('utc')
+
+    def get_time(self):
+        return datetime.datetime.now(self.time_zone).strftime(self.TIME_FORMAT) + ("" if self.is_client_tz else " (UTC)")
 
     def update_direction(self, new_key):
         if new_key == "UP" and self.direction != 2:
@@ -287,7 +324,7 @@ class Game:
                     self.has_display_statics = True
 
             # displaying the where source code is
-            stdscr.addstr(0, 0, strftime("It is %H:%M:%S (server time)"), curses.color_pair(4))
+            stdscr.addstr(0, 0, self.get_time(), curses.color_pair(4))
             stdscr.addstr(curses.LINES - 1, 0, self.VERSION_TEXT, curses.color_pair(2))
             sleep(self.DELAY_BETWEEN_FRAMES)
 
