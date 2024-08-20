@@ -253,10 +253,11 @@ class Game:
                 if not self.paused:
                     self.has_display_statics = False
             elif key == "i":
-                self.in_infos = True
-                self.in_menu = False
-                self.in_game = False
-                self.has_display_statics = False
+                if not self.in_game and not self.in_infos:
+                    self.in_infos = True
+                    self.in_menu = False
+                    self.in_game = False
+                    self.has_display_statics = False
 
             if self.in_menu:
                 if not self.has_display_statics:
