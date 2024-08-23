@@ -82,6 +82,7 @@ class Game:
             else:
                 try:
                     self.time_zone = pytz.timezone(json_response['timezone'])
+                    self.is_client_tz = True
                 except pytz.exceptions.UnknownTimeZoneError:
                     self.is_client_tz = False
                     self.time_zone = pytz.timezone('utc')
