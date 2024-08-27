@@ -33,6 +33,7 @@ class Game:
         self.default_snake = [(9, 3), (9, 4), (9, 5)]
         self.snake = None
         self.direction = 0  # 0 --> UP ; 1 --> LEFT ; 2 --> DOWN ; 3 --> RIGHT
+        self.last_frame_direction = 2  # this help to prevent dying if direction is changed twice
         self.in_menu = True
         self.apples = []
         self.paused = False
@@ -91,13 +92,13 @@ class Game:
         return datetime.datetime.now(self.time_zone).strftime(self.TIME_FORMAT) + ("" if self.is_client_tz else " (UTC)")
 
     def update_direction(self, new_key):
-        if new_key == "UP" and self.direction != 2:
+        if new_key == "UP" and self.last_frame_direction != 2:
             self.direction = 0
-        elif new_key == "LEFT" and self.direction != 3:
+        elif new_key == "LEFT" and self.last_frame_direction != 3:
             self.direction = 1
-        elif new_key == "DOWN" and self.direction != 0:
+        elif new_key == "DOWN" and self.last_frame_direction != 0:
             self.direction = 2
-        elif new_key == "RIGHT" and self.direction != 1:
+        elif new_key == "RIGHT" and self.last_frame_direction != 1:
             self.direction = 3
 
     def display_game(self):
@@ -132,6 +133,7 @@ class Game:
             headx += 1
 
         self.snake.insert(0, (headx, heady))
+        self.last_frame_direction = self.direction
 
         if (headx, heady) in self.apples:
             # if there is an apple at these coordinates, we remove it and increment the score
