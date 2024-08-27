@@ -72,21 +72,17 @@ class Game:
 
     def find_timezone(self):
         response = get(f"http://ip-api.com/json/{self.CLIENT}?fields=status,timezone")
-        if response.status_code != 200:
+        json_response = response.json()
+        if json_response['status'] != 'success':
             self.is_client_tz = False
             self.time_zone = pytz.timezone('utc')
         else:
-            json_response = response.json()
-            if json_response['status'] != 'success':
+            try:
+                self.time_zone = pytz.timezone(json_response['timezone'])
+                self.is_client_tz = True
+            except pytz.exceptions.UnknownTimeZoneError:
                 self.is_client_tz = False
                 self.time_zone = pytz.timezone('utc')
-            else:
-                try:
-                    self.time_zone = pytz.timezone(json_response['timezone'])
-                    self.is_client_tz = True
-                except pytz.exceptions.UnknownTimeZoneError:
-                    self.is_client_tz = False
-                    self.time_zone = pytz.timezone('utc')
 
     def get_time(self):
         return datetime.datetime.now(self.time_zone).strftime(self.TIME_FORMAT) + ("" if self.is_client_tz else " (UTC)")
