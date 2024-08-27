@@ -200,6 +200,7 @@ class Game:
         curses.init_pair(6, curses.COLOR_RED, curses.COLOR_RED)
 
         self.check_terminal_size(stdscr)
+        self.find_timezone()
 
         #  so we are sure to do not display anything outside an area
         game_window = curses.newwin(self.GAME_SIZE_Y, self.GAME_SIZE_X, 2, 3)
