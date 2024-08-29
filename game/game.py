@@ -57,7 +57,7 @@ class Game:
             self.CLIENT_PORT = sys.argv[2]
             self.HOST = sys.argv[3]
             self.HOST_PORT = sys.argv[4]
-        except IndexError: pass
+        except IndexError: self.CLIENT = None; self.CLIENT_PORT = 0;self.host=None;self.HOST_PORT=None
 
         self.time_zone = None
         self.is_client_tz = None
