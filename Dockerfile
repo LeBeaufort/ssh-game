@@ -28,4 +28,4 @@ COPY ./game/* .
 
 RUN service ssh start
 
-CMD ["/usr/sbin/sshd","-D"]
+CMD ["/usr/sbin/sshd","-D", "-e"]
