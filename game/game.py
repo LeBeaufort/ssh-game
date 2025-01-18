@@ -247,6 +247,9 @@ class Game:
             elif key == "d":
                 self.in_menu = True
                 self.in_game = False
+                # If 'self.display_gameover' is on 'True' and the player press D and play again,
+                # there will be no display
+                self.display_gameover = False
                 self.has_display_statics = False
             elif key == "p":
                 self.paused = not self.paused
