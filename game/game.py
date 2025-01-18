@@ -288,7 +288,7 @@ class Game:
                     self.snake_update_counter = 0
                     self.update_snake()
                     #  check if we should spawn the apple
-                    if len(self.apples) < self.MAX_APPLE and randint(0, self.APPLE_SPAWNING_PROBABILITY) == 0:
+                    if len(self.apples) <= 0 or (len(self.apples) < self.MAX_APPLE and randint(0, self.APPLE_SPAWNING_PROBABILITY) == 0):
                         self.spawn_apple()
 
                     game_window.clear()
